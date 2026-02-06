@@ -1,0 +1,1287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Partnership Blueprint</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0F1419;
+  --card: #1A2029;
+  --card-hover: #1E2530;
+  --accent: #E8A838;
+  --accent-glow: rgba(232, 168, 56, 0.15);
+  --accent-soft: #D4943A;
+  --text: #E8ECF1;
+  --text-muted: #8899AA;
+  --text-dim: #566475;
+  --border: #2A3444;
+  --success: #4ADE80;
+  --input-bg: #141B23;
+  --progress-bg: #1A2029;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 10%, rgba(232,168,56,0.04), transparent),
+    radial-gradient(ellipse 60% 50% at 80% 90%, rgba(232,168,56,0.03), transparent);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.container {
+  position: relative;
+  z-index: 1;
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 24px 20px 60px;
+}
+
+/* Header */
+.header {
+  text-align: center;
+  padding: 48px 0 32px;
+  animation: fadeDown 0.8s ease;
+}
+
+.header-icon {
+  width: 56px;
+  height: 56px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-soft));
+  border-radius: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  margin-bottom: 20px;
+  box-shadow: 0 8px 32px rgba(232,168,56,0.2);
+}
+
+.header h1 {
+  font-family: 'DM Serif Display', serif;
+  font-size: 32px;
+  font-weight: 400;
+  letter-spacing: -0.5px;
+  margin-bottom: 12px;
+  background: linear-gradient(135deg, #fff, var(--text));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.header p {
+  color: var(--text-muted);
+  font-size: 15px;
+  line-height: 1.7;
+  max-width: 440px;
+  margin: 0 auto 8px;
+}
+
+.header .subtext {
+  color: var(--text-dim);
+  font-size: 13px;
+  font-style: italic;
+}
+
+.name-input-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-top: 28px;
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.name-input-row input {
+  flex: 1;
+  background: var(--input-bg);
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 18px;
+  font-size: 16px;
+  font-family: 'DM Sans', sans-serif;
+  color: var(--text);
+  outline: none;
+  transition: all 0.25s ease;
+}
+
+.name-input-row input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+.btn-start {
+  background: linear-gradient(135deg, var(--accent), var(--accent-soft));
+  color: var(--bg);
+  padding: 14px 20px;
+  border-radius: 12px;
+  border: none;
+  font-size: 15px;
+  font-weight: 600;
+  font-family: 'DM Sans', sans-serif;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(232,168,56,0.25);
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.btn-start:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 28px rgba(232,168,56,0.35);
+}
+
+/* Progress */
+.progress-wrapper {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(15,20,25,0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  padding: 16px 20px;
+  margin: 0 -20px;
+  border-bottom: 1px solid rgba(42,52,68,0.5);
+}
+
+.progress-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.progress-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+}
+
+.progress-count {
+  font-size: 13px;
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.progress-bar {
+  height: 4px;
+  background: var(--progress-bg);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--accent-soft));
+  border-radius: 4px;
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 0 12px rgba(232,168,56,0.3);
+}
+
+/* Sections */
+.section {
+  display: none;
+  animation: fadeUp 0.5s ease;
+}
+
+.section.active { display: block; }
+
+.section-header {
+  margin: 28px 0 24px;
+}
+
+.section-number {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 6px;
+}
+
+.section-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: 24px;
+  font-weight: 400;
+  color: var(--text);
+}
+
+.section-desc {
+  color: var(--text-muted);
+  font-size: 14px;
+  margin-top: 6px;
+  line-height: 1.5;
+}
+
+/* Question cards */
+.question {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 22px;
+  margin-bottom: 14px;
+  transition: all 0.3s ease;
+}
+
+.question:hover {
+  border-color: rgba(232,168,56,0.15);
+  background: var(--card-hover);
+}
+
+.question label.q-label {
+  display: block;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 4px;
+  line-height: 1.5;
+}
+
+.question .hint {
+  font-size: 13px;
+  color: var(--text-dim);
+  margin-bottom: 14px;
+  line-height: 1.4;
+}
+
+.question input[type="text"],
+.question input[type="email"],
+.question input[type="number"],
+.question textarea,
+.question select {
+  width: 100%;
+  background: var(--input-bg);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-size: 15px;
+  font-family: 'DM Sans', sans-serif;
+  color: var(--text);
+  transition: all 0.25s ease;
+  outline: none;
+}
+
+.question input:focus,
+.question textarea:focus,
+.question select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+.question textarea {
+  resize: vertical;
+  min-height: 90px;
+  line-height: 1.6;
+}
+
+.question select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%238899AA' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  padding-right: 40px;
+  cursor: pointer;
+}
+
+.question select option {
+  background: var(--card);
+  color: var(--text);
+}
+
+/* Rating scale */
+.rating-group { margin-bottom: 18px; }
+.rating-group:last-child { margin-bottom: 0; }
+.rating-group-label {
+  font-size: 14px;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+
+.rating-scale {
+  display: flex;
+  gap: 8px;
+}
+
+.rating-scale .rate-btn {
+  flex: 1;
+  min-width: 40px;
+  padding: 10px 4px;
+  background: var(--input-bg);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  color: var(--text-muted);
+  font-size: 14px;
+  font-weight: 600;
+  font-family: 'DM Sans', sans-serif;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.rating-scale .rate-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.rating-scale .rate-btn.selected {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--bg);
+  box-shadow: 0 4px 16px rgba(232,168,56,0.25);
+}
+
+.scale-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 6px;
+  font-size: 11px;
+  color: var(--text-dim);
+}
+
+/* Checkbox group */
+.checkbox-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.checkbox-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: var(--input-bg);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 14px;
+  line-height: 1.4;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.checkbox-item:hover { border-color: rgba(232,168,56,0.3); }
+
+.checkbox-item.checked {
+  border-color: var(--accent);
+  background: var(--accent-glow);
+}
+
+.checkbox-item input { display: none; }
+
+.check-box {
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--border);
+  border-radius: 6px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.checkbox-item.checked .check-box {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.check-box svg { opacity: 0; transition: opacity 0.2s ease; }
+.checkbox-item.checked .check-box svg { opacity: 1; }
+
+/* Buttons */
+.nav-buttons {
+  display: flex;
+  gap: 12px;
+  margin-top: 28px;
+  padding-bottom: 20px;
+}
+
+.btn {
+  padding: 14px 28px;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  font-family: 'DM Sans', sans-serif;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btn-primary {
+  flex: 1;
+  background: linear-gradient(135deg, var(--accent), var(--accent-soft));
+  color: var(--bg);
+  box-shadow: 0 4px 20px rgba(232,168,56,0.25);
+}
+
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 28px rgba(232,168,56,0.35);
+}
+
+.btn-primary:active { transform: translateY(0); }
+
+.btn-secondary {
+  background: var(--card);
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  padding: 14px 20px;
+}
+
+.btn-secondary:hover {
+  color: var(--text);
+  border-color: rgba(232,168,56,0.3);
+}
+
+/* Completion */
+.complete-screen {
+  text-align: center;
+  padding: 60px 20px;
+  animation: fadeUp 0.6s ease;
+}
+
+.complete-icon {
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, var(--success), #22C55E);
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px;
+  margin-bottom: 24px;
+  box-shadow: 0 8px 32px rgba(74,222,128,0.2);
+  animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.complete-screen h2 {
+  font-family: 'DM Serif Display', serif;
+  font-size: 28px;
+  font-weight: 400;
+  margin-bottom: 12px;
+}
+
+.complete-screen p {
+  color: var(--text-muted);
+  font-size: 15px;
+  line-height: 1.6;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.result-actions {
+  margin-top: 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.btn-email {
+  display: inline-block;
+  padding: 14px 32px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-soft));
+  color: var(--bg);
+  border-radius: 12px;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 15px;
+  font-family: 'DM Sans', sans-serif;
+  box-shadow: 0 4px 20px rgba(232,168,56,0.25);
+  transition: all 0.3s ease;
+}
+
+.btn-email:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 28px rgba(232,168,56,0.35);
+}
+
+.btn-copy {
+  padding: 12px 24px;
+  background: var(--card);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-copy:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.or-divider {
+  font-size: 12px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Animations */
+@keyframes fadeDown {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes popIn {
+  0% { transform: scale(0); }
+  100% { transform: scale(1); }
+}
+
+/* Validation */
+.question.invalid {
+  border-color: #EF4444;
+  animation: shake 0.4s ease;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-6px); }
+  75% { transform: translateX(6px); }
+}
+
+.validation-msg {
+  font-size: 12px;
+  color: #EF4444;
+  margin-top: 8px;
+  display: none;
+}
+
+.question.invalid .validation-msg { display: block; }
+
+.required { color: var(--accent); }
+
+@media (max-width: 480px) {
+  .header h1 { font-size: 26px; }
+  .section-title { font-size: 20px; }
+  .question { padding: 18px; }
+  .rating-scale .rate-btn { min-width: 36px; padding: 10px 2px; font-size: 13px; }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- ===== WELCOME ===== -->
+  <div class="header" id="headerBlock">
+    <div class="header-icon">🤝</div>
+    <h1>Partnership Blueprint</h1>
+    <p>We're figuring out what kind of business the three of us could build together. This takes about 10 minutes — just answer honestly, not what you think sounds good.</p>
+    <p class="subtext">Your answers go straight to James. Nobody else sees them.</p>
+    <div class="name-input-row">
+      <input type="text" id="respondentName" placeholder="Your first name..." autofocus>
+      <button class="btn-start" onclick="startSurvey()">Let's Go →</button>
+    </div>
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="progress-wrapper" id="progressBar" style="display:none;">
+    <div class="progress-info">
+      <span class="progress-label">Progress</span>
+      <span class="progress-count" id="progressCount">1 of 7</span>
+    </div>
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressFill" style="width:14.3%"></div>
+    </div>
+  </div>
+
+  <!-- ===== SECTION 1: THE BASICS ===== -->
+  <div class="section" id="section1">
+    <div class="section-header">
+      <div class="section-number">Section 01</div>
+      <div class="section-title">The Basics</div>
+      <div class="section-desc">Quick snapshot of where you're at right now.</div>
+    </div>
+
+    <div class="question" data-required="true" data-field="age">
+      <label class="q-label">How old are you? <span class="required">*</span></label>
+      <input type="number" name="age" min="18" max="100" placeholder="e.g. 38">
+      <div class="validation-msg">Please enter your age</div>
+    </div>
+
+    <div class="question" data-required="true" data-field="location">
+      <label class="q-label">Where do you live? <span class="required">*</span></label>
+      <input type="text" name="location" placeholder="City, State">
+      <div class="validation-msg">Please enter your location</div>
+    </div>
+
+    <div class="question" data-required="true" data-field="current_situation">
+      <label class="q-label">What's your current work situation? <span class="required">*</span></label>
+      <div class="hint">Job title, what you actually do day-to-day, employed/self-employed/between jobs</div>
+      <textarea name="current_situation" placeholder="e.g. Self-employed carpenter, mostly residential remodels. Steady work but no benefits..."></textarea>
+      <div class="validation-msg">Please describe your current situation</div>
+    </div>
+
+    <div class="question" data-field="education_training">
+      <label class="q-label">Education & formal training</label>
+      <div class="hint">Degrees, trade school, military training, apprenticeships — all of it</div>
+      <textarea name="education_training" placeholder="e.g. Trade school for carpentry, some college courses in business..."></textarea>
+    </div>
+
+    <div class="nav-buttons">
+      <button class="btn btn-primary" onclick="nextSection(1)">Continue →</button>
+    </div>
+  </div>
+
+  <!-- ===== SECTION 2: WHAT YOU BRING TO THE TABLE ===== -->
+  <div class="section" id="section2">
+    <div class="section-header">
+      <div class="section-number">Section 02</div>
+      <div class="section-title">What You Bring to the Table</div>
+      <div class="section-desc">Skills, experience, connections — the whole picture.</div>
+    </div>
+
+    <div class="question" data-required="true" data-field="core_skills">
+      <label class="q-label">What are the top 3–5 things you're genuinely good at? <span class="required">*</span></label>
+      <div class="hint">Professional or personal — if you're better at it than most people, list it</div>
+      <textarea name="core_skills" placeholder="e.g. Framing, finish carpentry, reading blueprints, estimating material costs, problem-solving on the fly..."></textarea>
+      <div class="validation-msg">Please list your top skills</div>
+    </div>
+
+    <div class="question" data-required="true" data-field="skill_areas">
+      <label class="q-label">Which of these feel like strengths? <span class="required">*</span></label>
+      <div class="hint">Pick all that honestly apply</div>
+      <div class="checkbox-group" id="skillAreasGroup">
+        <label class="checkbox-item" ><input type="checkbox" name="skill_areas" value="Hands-on trade work (building, fixing, installing)"><span class="check-box"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5L4.5 8.5L11 1.5" stroke="#0F1419" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Hands-on trade work (building, fixing, installing)</label>
+        <label class="checkbox-item" ><input type="checkbox" name="skill_areas" value="Sales, negotiating, closing deals"><span class="check-box"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5L4.5 8.5L11 1.5" stroke="#0F1419" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Sales, negotiating, closing deals</label>
+        <label class="checkbox-item" ><input type="checkbox" name="skill_areas" value="Customer service & client relationships"><span class="check-box"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5L4.5 8.5L11 1.5" stroke="#0F1419" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Customer service & client relationships</label>
+        <label class="checkbox-item" ><input type="checkbox" name="skill_areas" value="Operations, scheduling, logistics"><span class="check-box"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5L4.5 8.5L11 1.5" stroke="#0F1419" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Operations, scheduling, logistics</label>
+        <label class="checkbox-item" ><input type="checkbox" name="skill_areas" value="Technology, software, systems"><span class="check-box"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5L4.5 8.5L11 1.5" stroke="#0F1419" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Technology, software, systems</label>
+        <label class="checkbox-item" ><input type="checkbox" name="skill_areas" value="Marketing, branding, social media"><span class="check-box"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5L4.5 8.5L11 1.5" stroke="#0F1419" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Marketing, branding, social media</label>
+        <label class="checkbox-item" ><input type="checkbox" name="skill_areas" value="Bookkeeping, finances, numbers"><span class="check-box"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5L4.5 8.5L11 1.5" stroke="#0F1419" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Bookkeeping, finances, numbers</label>
+        <label class="checkbox-item" ><input type="checkbox" name="skill_areas" value="Leading people, managing crews/teams"><span class="check-box"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5L4.5 8.5L11 1.5" stroke="#0F1419" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Leading people, managing crews/teams</label>
+        <label class="checkbox-item" ><input type="checkbox" name="skill_areas" value="Problem-solving under pressure"><span class="check-box"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5L4.5 8.5L11 1.5" stroke="#0F1419" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Problem-solving under pressure</label>
+      </div>
+      <div class="validation-msg">Please select at least one</div>
+    </div>
+
+    <div class="question" data-field="licenses_certs">
+      <label class="q-label">Any licenses, certifications, or credentials?</label>
+      <div class="hint">Current or expired — expired ones can often be renewed</div>
+      <textarea name="licenses_certs" placeholder="e.g. EPA Lead RRP, OSHA 30, CDL, real estate license, BPI certification..."></textarea>
+    </div>
+
+    <div class="question" data-field="network_connections">
+      <label class="q-label">Who do you know that could help a new business?</label>
+      <div class="hint">Contractors, realtors, inspectors, suppliers, people at the city, anyone useful</div>
+      <textarea name="network_connections" placeholder="e.g. I know a few realtors, my buddy runs a plumbing company, I've worked with the building inspector..."></textarea>
+    </div>
+
+    <div class="question" data-field="side_skills">
+      <label class="q-label">Any side-hustle skills or hidden talents?</label>
+      <div class="hint">Things you do on the side, hobbies that could translate, stuff people don't know about</div>
+      <textarea name="side_skills" placeholder="e.g. I flip furniture, I taught myself basic web design, I'm good at talking to people..."></textarea>
+    </div>
+
+    <div class="nav-buttons">
+      <button class="btn btn-secondary" onclick="prevSection(2)">← Back</button>
+      <button class="btn btn-primary" onclick="nextSection(2)">Continue →</button>
+    </div>
+  </div>
+
+  <!-- ===== SECTION 3: EXPERIENCE & TRACK RECORD ===== -->
+  <div class="section" id="section3">
+    <div class="section-header">
+      <div class="section-number">Section 03</div>
+      <div class="section-title">Experience & Track Record</div>
+      <div class="section-desc">Past experience — good and bad — tells us a lot.</div>
+    </div>
+
+    <div class="question" data-field="business_experience">
+      <label class="q-label">Have you ever run or helped run a business?</label>
+      <div class="hint">Even informal stuff counts — side gigs, helping a friend's company, managing a department</div>
+      <textarea name="business_experience" placeholder="e.g. I ran my own handyman business for 2 years, helped my friend set up his landscaping company..."></textarea>
+    </div>
+
+    <div class="question" data-field="biggest_professional_win">
+      <label class="q-label">What's your biggest professional accomplishment?</label>
+      <div class="hint">Something you're proud of that shows what you can do</div>
+      <textarea name="biggest_professional_win" placeholder="e.g. Managed a $200K kitchen remodel start to finish, built a client base from scratch..."></textarea>
+    </div>
+
+    <div class="question" data-field="biggest_lesson">
+      <label class="q-label">What's the biggest lesson you've learned from a professional failure or setback?</label>
+      <div class="hint">No judgment — this is about what you learned, not what went wrong</div>
+      <textarea name="biggest_lesson" placeholder="e.g. I underbid a project and lost money, learned I need to always pad estimates by 15%..."></textarea>
+    </div>
+
+    <div class="question" data-field="industries_experience">
+      <label class="q-label">What industries have you worked in?</label>
+      <div class="hint">List them all, even short stints — every industry teaches you something</div>
+      <textarea name="industries_experience" placeholder="e.g. Construction, retail, food service, warehousing, auto repair..."></textarea>
+    </div>
+
+    <div class="nav-buttons">
+      <button class="btn btn-secondary" onclick="prevSection(3)">← Back</button>
+      <button class="btn btn-primary" onclick="nextSection(3)">Continue →</button>
+    </div>
+  </div>
+
+  <!-- ===== SECTION 4: MONEY & RESOURCES ===== -->
+  <div class="section" id="section4">
+    <div class="section-header">
+      <div class="section-number">Section 04</div>
+      <div class="section-title">Money & Resources</div>
+      <div class="section-desc">No judgment — just need the real picture so we plan smart.</div>
+    </div>
+
+    <div class="question" data-required="true" data-field="invest_amount">
+      <label class="q-label">How much could you realistically put into a new business? <span class="required">*</span></label>
+      <select name="invest_amount">
+        <option value="">Select one...</option>
+        <option>$0 — needs to be zero cost to start</option>
+        <option>Under $1,000</option>
+        <option>$1,000 – $5,000</option>
+        <option>$5,000 – $15,000</option>
+        <option>$15,000 – $50,000</option>
+        <option>$50,000+</option>
+      </select>
+      <div class="validation-msg">Please select an option</div>
+    </div>
+
+    <div class="question" data-required="true" data-field="income_runway">
+      <label class="q-label">How long could you go without getting paid from this business? <span class="required">*</span></label>
+      <div class="hint">Be honest — this affects what kind of business we can start</div>
+      <select name="income_runway">
+        <option value="">Select one...</option>
+        <option>I need income right away</option>
+        <option>1–3 months</option>
+        <option>3–6 months</option>
+        <option>6–12 months</option>
+        <option>12+ months</option>
+      </select>
+      <div class="validation-msg">Please select an option</div>
+    </div>
+
+    <div class="question" data-field="credit_range">
+      <label class="q-label">Rough credit score range?</label>
+      <div class="hint">Matters for equipment financing and business loans down the road</div>
+      <select name="credit_range">
+        <option value="">Select one...</option>
+        <option>Under 580</option>
+        <option>580 – 669</option>
+        <option>670 – 739</option>
+        <option>740+</option>
+        <option>Not sure</option>
+      </select>
+    </div>
+
+    <div class="question" data-field="existing_assets">
+      <label class="q-label">What tools, equipment, or vehicles do you already own that we could use?</label>
+      <textarea name="existing_assets" placeholder="e.g. Full carpentry tool set, work truck, table saw, laptop, trailer..."></textarea>
+    </div>
+
+    <div class="question" data-field="financial_obligations">
+      <label class="q-label">Any major financial commitments that affect your risk tolerance?</label>
+      <div class="hint">Mortgage, child support, medical bills, student loans — anything relevant</div>
+      <textarea name="financial_obligations" placeholder="Be as general or specific as you're comfortable with..."></textarea>
+    </div>
+
+    <div class="question" data-field="other_income">
+      <label class="q-label">Do you have any other sources of income besides your main job?</label>
+      <div class="hint">Spouse's income, rental property, side work, disability, etc.</div>
+      <textarea name="other_income" placeholder="e.g. Wife works full-time, I do side jobs on weekends..."></textarea>
+    </div>
+
+    <div class="nav-buttons">
+      <button class="btn btn-secondary" onclick="prevSection(4)">← Back</button>
+      <button class="btn btn-primary" onclick="nextSection(4)">Continue →</button>
+    </div>
+  </div>
+
+  <!-- ===== SECTION 5: HOW YOU WORK ===== -->
+  <div class="section" id="section5">
+    <div class="section-header">
+      <div class="section-number">Section 05</div>
+      <div class="section-title">How You Work</div>
+      <div class="section-desc">Time, energy, preferences, and limits.</div>
+    </div>
+
+    <div class="question" data-required="true" data-field="hours_available">
+      <label class="q-label">How many hours a week can you commit? <span class="required">*</span></label>
+      <select name="hours_available">
+        <option value="">Select one...</option>
+        <option>Under 10 — side project only</option>
+        <option>10–20 — solid part-time</option>
+        <option>20–35 — heavy part-time</option>
+        <option>35–50 — full-time</option>
+        <option>50+ — all in</option>
+      </select>
+      <div class="validation-msg">Please select an option</div>
+    </div>
+
+    <div class="question" data-field="schedule_constraints">
+      <label class="q-label">Any schedule constraints?</label>
+      <div class="hint">Kids, current job hours, health stuff, anything that limits when you can work</div>
+      <textarea name="schedule_constraints" placeholder="e.g. Can't work Sundays, need to pick up kids at 3pm on weekdays..."></textarea>
+    </div>
+
+    <div class="question" data-required="true" data-field="work_preferences">
+      <label class="q-label">Rate how much you enjoy each type of work <span class="required">*</span></label>
+      <div class="hint">1 = hate it, 5 = love it — be honest</div>
+
+      <div class="rating-group">
+        <div class="rating-group-label">Physical / hands-on work in the field</div>
+        <div class="rating-scale" data-name="pref_physical">
+          <button class="rate-btn" onclick="selectRating(this,'pref_physical',1)">1</button>
+          <button class="rate-btn" onclick="selectRating(this,'pref_physical',2)">2</button>
+          <button class="rate-btn" onclick="selectRating(this,'pref_physical',3)">3</button>
+          <button class="rate-btn" onclick="selectRating(this,'pref_physical',4)">4</button>
+          <button class="rate-btn" onclick="selectRating(this,'pref_physical',5)">5</button>
+        </div>
+        <div class="scale-labels"><span>Hate it</span><span>Love it</span></div>
+      </div>
+
+      <div class="rating-group">
+        <div class="rating-group-label">Computer / office / behind-the-scenes work</div>
+        <div class="rating-scale" data-name="pref_office">
+          <button class="rate-btn" onclick="selectRating(this,'pref_office',1)">1</button>
+          <button class="rate-btn" onclick="selectRating(this,'pref_office',2)">2</button>
+          <button class="rate-btn" onclick="selectRating(this,'pref_office',3)">3</button>
+          <button class="rate-btn" onclick="selectRating(this,'pref_office',4)">4</button>
+          <button class="rate-btn" onclick="selectRating(this,'pref_office',5)">5</button>
+        </div>
+        <div class="scale-labels"><span>Hate it</span><span>Love it</span></div>
+      </div>
+
+      <div class="rating-group">
+        <div class="rating-group-label">Talking to customers / selling / networking</div>
+        <div class="rating-scale" data-name="pref_sales">
+          <button class="rate-btn" onclick="selectRating(this,'pref_sales',1)">1</button>
+          <button class="rate-btn" onclick="selectRating(this,'pref_sales',2)">2</button>
+          <button class="rate-btn" onclick="selectRating(this,'pref_sales',3)">3</button>
+          <button class="rate-btn" onclick="selectRating(this,'pref_sales',4)">4</button>
+          <button class="rate-btn" onclick="selectRating(this,'pref_sales',5)">5</button>
+        </div>
+        <div class="scale-labels"><span>Hate it</span><span>Love it</span></div>
+      </div>
+
+      <div class="rating-group">
+        <div class="rating-group-label">Managing people / running projects</div>
+        <div class="rating-scale" data-name="pref_manage">
+          <button class="rate-btn" onclick="selectRating(this,'pref_manage',1)">1</button>
+          <button class="rate-btn" onclick="selectRating(this,'pref_manage',2)">2</button>
+          <button class="rate-btn" onclick="selectRating(this,'pref_manage',3)">3</button>
+          <button class="rate-btn" onclick="selectRating(this,'pref_manage',4)">4</button>
+          <button class="rate-btn" onclick="selectRating(this,'pref_manage',5)">5</button>
+        </div>
+        <div class="scale-labels"><span>Hate it</span><span>Love it</span></div>
+      </div>
+
+      <div class="rating-group">
+        <div class="rating-group-label">Learning new skills / getting certifications</div>
+        <div class="rating-scale" data-name="pref_learning">
+          <button class="rate-btn" onclick="selectRating(this,'pref_learning',1)">1</button>
+          <button class="rate-btn" onclick="selectRating(this,'pref_learning',2)">2</button>
+          <button class="rate-btn" onclick="selectRating(this,'pref_learning',3)">3</button>
+          <button class="rate-btn" onclick="selectRating(this,'pref_learning',4)">4</button>
+          <button class="rate-btn" onclick="selectRating(this,'pref_learning',5)">5</button>
+        </div>
+        <div class="scale-labels"><span>Hate it</span><span>Love it</span></div>
+      </div>
+    </div>
+
+    <div class="question" data-field="physical_limitations">
+      <label class="q-label">Any physical limitations we should factor in?</label>
+      <div class="hint">Bad back, knee issues, can't do heights — anything that affects what kind of work you can do long-term</div>
+      <textarea name="physical_limitations" placeholder="e.g. My knees aren't great, can't do roofing anymore..."></textarea>
+    </div>
+
+    <div class="question" data-field="hard_nos">
+      <label class="q-label">Any hard no's? Things you absolutely won't do?</label>
+      <textarea name="hard_nos" placeholder="e.g. No cold-calling, won't work nights, no roofing, don't want to deal with permits..."></textarea>
+    </div>
+
+    <div class="nav-buttons">
+      <button class="btn btn-secondary" onclick="prevSection(5)">← Back</button>
+      <button class="btn btn-primary" onclick="nextSection(5)">Continue →</button>
+    </div>
+  </div>
+
+  <!-- ===== SECTION 6: WHAT EXCITES YOU ===== -->
+  <div class="section" id="section6">
+    <div class="section-header">
+      <div class="section-number">Section 06</div>
+      <div class="section-title">What Excites You</div>
+      <div class="section-desc">Vision, motivation, and what success looks like to you.</div>
+    </div>
+
+    <div class="question" data-required="true" data-field="business_ideas">
+      <label class="q-label">What business ideas have crossed your mind? <span class="required">*</span></label>
+      <div class="hint">All of them — even ones that seem dumb. List everything.</div>
+      <textarea name="business_ideas" placeholder="e.g. Home renovation, energy efficiency upgrades, property management, food truck, lawn care, pressure washing..."></textarea>
+      <div class="validation-msg">Please share at least one idea</div>
+    </div>
+
+    <div class="question" data-field="industries_excited">
+      <label class="q-label">What industries or types of work interest you most?</label>
+      <div class="hint">Pick all that appeal to you</div>
+      <div class="checkbox-group">
+        <label class="checkbox-item" ><input type="checkbox" name="industries_excited" value="Home renovation / remodeling"><span class="check-box"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5L4.5 8.5L11 1.5" stroke="#0F1419" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Home renovation / remodeling</label>
+        <label class="checkbox-item" ><input type="checkbox" name="industries_excited" value="Energy efficiency / weatherization"><span class="check-box"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5L4.5 8.5L11 1.5" stroke="#0F1419" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Energy efficiency / weatherization</label>
+        <label class="checkbox-item" ><input type="checkbox" name="industries_excited" value="Property management / rental properties"><span class="check-box"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5L4.5 8.5L11 1.5" stroke="#0F1419" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Property management / rental properties</label>
+        <label class="checkbox-item" ><input type="checkbox" name="industries_excited" value="Service business (lawn, cleaning, pressure washing)"><span class="check-box"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5L4.5 8.5L11 1.5" stroke="#0F1419" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Service business (lawn, cleaning, pressure washing)</label>
+        <label class="checkbox-item" ><input type="checkbox" name="industries_excited" value="Tech / software / digital services"><span class="check-box"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5L4.5 8.5L11 1.5" stroke="#0F1419" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Tech / software / digital services</label>
+        <label class="checkbox-item" ><input type="checkbox" name="industries_excited" value="Food / restaurant / catering"><span class="check-box"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5L4.5 8.5L11 1.5" stroke="#0F1419" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Food / restaurant / catering</label>
+        <label class="checkbox-item" ><input type="checkbox" name="industries_excited" value="Retail / e-commerce"><span class="check-box"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5L4.5 8.5L11 1.5" stroke="#0F1419" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Retail / e-commerce</label>
+        <label class="checkbox-item" ><input type="checkbox" name="industries_excited" value="Something else entirely"><span class="check-box"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5L4.5 8.5L11 1.5" stroke="#0F1419" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Something else entirely</label>
+      </div>
+    </div>
+
+    <div class="question" data-field="why_business">
+      <label class="q-label">Why do you want to run your own business?</label>
+      <div class="hint">The real reason — not the polished answer</div>
+      <textarea name="why_business" placeholder="e.g. Tired of making money for someone else, want financial freedom, want to build something with family..."></textarea>
+    </div>
+
+    <div class="question" data-required="true" data-field="risk_tolerance">
+      <label class="q-label">How much risk are you comfortable with? <span class="required">*</span></label>
+      <div class="rating-scale" data-name="risk_tolerance">
+        <button class="rate-btn" onclick="selectRating(this,'risk_tolerance',1)">1</button>
+        <button class="rate-btn" onclick="selectRating(this,'risk_tolerance',2)">2</button>
+        <button class="rate-btn" onclick="selectRating(this,'risk_tolerance',3)">3</button>
+        <button class="rate-btn" onclick="selectRating(this,'risk_tolerance',4)">4</button>
+        <button class="rate-btn" onclick="selectRating(this,'risk_tolerance',5)">5</button>
+      </div>
+      <div class="scale-labels"><span>Play it very safe</span><span>Swing for the fences</span></div>
+      <div class="validation-msg">Please select a rating</div>
+    </div>
+
+    <div class="question" data-field="five_year_vision">
+      <label class="q-label">What does success look like to you in 5 years?</label>
+      <div class="hint">Income, lifestyle, size of business, what your day looks like</div>
+      <textarea name="five_year_vision" placeholder="e.g. Making $120K, working 4 days/week, running a crew of 5, owning a few rental properties on the side..."></textarea>
+    </div>
+
+    <div class="nav-buttons">
+      <button class="btn btn-secondary" onclick="prevSection(6)">← Back</button>
+      <button class="btn btn-primary" onclick="nextSection(6)">Continue →</button>
+    </div>
+  </div>
+
+  <!-- ===== SECTION 7: THE PARTNERSHIP ===== -->
+  <div class="section" id="section7">
+    <div class="section-header">
+      <div class="section-number">Section 07</div>
+      <div class="section-title">Working Together</div>
+      <div class="section-desc">This might be the most important section. How we work together matters more than what we do.</div>
+    </div>
+
+    <div class="question" data-required="true" data-field="role_preference">
+      <label class="q-label">What role do you see yourself playing? <span class="required">*</span></label>
+      <div class="hint">Pick all that feel right — we'll figure out overlap later</div>
+      <div class="checkbox-group">
+        <label class="checkbox-item" ><input type="checkbox" name="role_preference" value="The builder — doing the core work"><span class="check-box"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5L4.5 8.5L11 1.5" stroke="#0F1419" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>The builder — doing the core work</label>
+        <label class="checkbox-item" ><input type="checkbox" name="role_preference" value="The face — sales, clients, relationships"><span class="check-box"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5L4.5 8.5L11 1.5" stroke="#0F1419" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>The face — sales, clients, relationships</label>
+        <label class="checkbox-item" ><input type="checkbox" name="role_preference" value="The brain — strategy, tech, systems"><span class="check-box"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5L4.5 8.5L11 1.5" stroke="#0F1419" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>The brain — strategy, tech, systems</label>
+        <label class="checkbox-item" ><input type="checkbox" name="role_preference" value="The manager — keeping everything on track"><span class="check-box"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5L4.5 8.5L11 1.5" stroke="#0F1419" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>The manager — keeping everything on track</label>
+        <label class="checkbox-item" ><input type="checkbox" name="role_preference" value="The money person — finances, billing, admin"><span class="check-box"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5L4.5 8.5L11 1.5" stroke="#0F1419" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>The money person — finances, billing, admin</label>
+        <label class="checkbox-item" ><input type="checkbox" name="role_preference" value="Jack of all trades — I'll do whatever's needed"><span class="check-box"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5L4.5 8.5L11 1.5" stroke="#0F1419" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Jack of all trades — I'll do whatever's needed</label>
+      </div>
+      <div class="validation-msg">Please select at least one role</div>
+    </div>
+
+    <div class="question" data-field="conflict_style">
+      <label class="q-label">When we disagree on a business decision, what's the best way to handle it?</label>
+      <select name="conflict_style">
+        <option value="">Select one...</option>
+        <option>Hash it out right then and there</option>
+        <option>Cool off first, then discuss calmly</option>
+        <option>Whoever has the most expertise on that topic decides</option>
+        <option>Put it to a vote — majority rules</option>
+        <option>Bring in an outside opinion</option>
+      </select>
+    </div>
+
+    <div class="question" data-field="communication_style">
+      <label class="q-label">How do you prefer to communicate about work stuff?</label>
+      <select name="communication_style">
+        <option value="">Select one...</option>
+        <option>Text / group chat throughout the day</option>
+        <option>Phone calls when something comes up</option>
+        <option>Regular weekly meetings (in person or video)</option>
+        <option>I'll just show up and handle my part</option>
+        <option>Mix of all the above</option>
+      </select>
+    </div>
+
+    <div class="question" data-field="ownership_expectations">
+      <label class="q-label">What are your expectations around ownership and pay?</label>
+      <div class="hint">Equal split? Based on investment? Based on hours? Whatever you think — be honest.</div>
+      <textarea name="ownership_expectations" placeholder="e.g. I think it should be equal thirds since we're family, or based on who puts in more hours..."></textarea>
+    </div>
+
+    <div class="question" data-field="family_concerns">
+      <label class="q-label">What's your biggest concern about doing business with family?</label>
+      <div class="hint">Better to say it now than let it fester</div>
+      <textarea name="family_concerns" placeholder="e.g. I don't want business disagreements to ruin our relationship..."></textarea>
+    </div>
+
+    <div class="question" data-field="commitment_level">
+      <label class="q-label">On a scale of 1–5, how committed are you to actually doing this? <span class="required">*</span></label>
+      <div class="hint">Be real — it's okay if you're still feeling it out</div>
+      <div class="rating-scale" data-name="commitment_level">
+        <button class="rate-btn" onclick="selectRating(this,'commitment_level',1)">1</button>
+        <button class="rate-btn" onclick="selectRating(this,'commitment_level',2)">2</button>
+        <button class="rate-btn" onclick="selectRating(this,'commitment_level',3)">3</button>
+        <button class="rate-btn" onclick="selectRating(this,'commitment_level',4)">4</button>
+        <button class="rate-btn" onclick="selectRating(this,'commitment_level',5)">5</button>
+      </div>
+      <div class="scale-labels"><span>Just exploring</span><span>Let's do this</span></div>
+      <div class="validation-msg">Please select a rating</div>
+    </div>
+
+    <div class="question" data-field="anything_else">
+      <label class="q-label">Anything else on your mind?</label>
+      <div class="hint">Dreams, worries, random ideas — this is your space</div>
+      <textarea name="anything_else" placeholder="Free space — say whatever you want..."></textarea>
+    </div>
+
+    <div class="nav-buttons">
+      <button class="btn btn-secondary" onclick="prevSection(7)">← Back</button>
+      <button class="btn btn-primary" onclick="submitSurvey()">Submit My Answers ✓</button>
+    </div>
+  </div>
+
+  <!-- ===== COMPLETE ===== -->
+  <div class="section" id="completeSection">
+    <div class="complete-screen">
+      <div class="complete-icon">✓</div>
+      <h2>Done! Nice Work.</h2>
+      <p>Your answers are ready to send to James. Hit the button below and it'll open your email app with everything pre-filled — just hit send.</p>
+      <div class="result-actions" id="resultActions"></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const JAMES_EMAIL = 'devjamesallen@gmail.com';
+const totalSections = 7;
+let currentSection = 0;
+const ratings = {};
+let respondentName = '';
+
+function startSurvey() {
+  const input = document.getElementById('respondentName');
+  respondentName = input.value.trim();
+  if (!respondentName) {
+    input.style.borderColor = '#EF4444';
+    input.style.boxShadow = '0 0 0 3px rgba(239,68,68,0.15)';
+    input.placeholder = 'Please enter your name...';
+    return;
+  }
+  document.getElementById('headerBlock').style.display = 'none';
+  document.getElementById('progressBar').style.display = 'block';
+  showSection(1);
+}
+
+function showSection(num) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  const el = document.getElementById('section' + num);
+  if (el) {
+    el.classList.add('active');
+    currentSection = num;
+    updateProgress();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+}
+
+function updateProgress() {
+  document.getElementById('progressFill').style.width = ((currentSection / totalSections) * 100) + '%';
+  document.getElementById('progressCount').textContent = currentSection + ' of ' + totalSections;
+}
+
+function nextSection(cur) {
+  if (!validateSection(cur)) return;
+  showSection(cur + 1);
+}
+
+function prevSection(cur) { showSection(cur - 1); }
+
+function validateSection(num) {
+  const section = document.getElementById('section' + num);
+  const required = section.querySelectorAll('.question[data-required="true"]');
+  let valid = true;
+
+  required.forEach(q => {
+    q.classList.remove('invalid');
+    const field = q.dataset.field;
+
+    // Check checkboxes
+    const checked = q.querySelectorAll('input[type="checkbox"]:checked');
+    if (checked.length > 0) return;
+
+    // Check ratings
+    if (ratings[field]) return;
+
+    // Check inputs
+    const input = q.querySelector('input, textarea, select');
+    if (input && input.value && input.value.trim()) return;
+
+    q.classList.add('invalid');
+    valid = false;
+  });
+
+  if (!valid) {
+    const first = section.querySelector('.question.invalid');
+    if (first) first.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+  return valid;
+}
+
+function selectRating(btn, name, value) {
+  btn.parentElement.querySelectorAll('.rate-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  ratings[name] = value;
+}
+
+function initCheckboxes() {
+  document.querySelectorAll('.checkbox-item input[type="checkbox"]').forEach(cb => {
+    cb.addEventListener('change', function() {
+      this.closest('.checkbox-item').classList.toggle('checked', this.checked);
+    });
+  });
+}
+
+// Init on load
+document.addEventListener('DOMContentLoaded', initCheckboxes);
+
+function gatherData() {
+  const data = { name: respondentName, submitted: new Date().toLocaleString() };
+
+  document.querySelectorAll('.question input[type="text"], .question input[type="number"], .question textarea, .question select').forEach(el => {
+    if (el.name && el.value) data[el.name] = el.value;
+  });
+
+  const groups = {};
+  document.querySelectorAll('.question input[type="checkbox"]:checked').forEach(cb => {
+    if (!groups[cb.name]) groups[cb.name] = [];
+    groups[cb.name].push(cb.value);
+  });
+  Object.entries(groups).forEach(([k, v]) => data[k] = v.join(' | '));
+
+  Object.entries(ratings).forEach(([k, v]) => data[k] = v + '/5');
+
+  return data;
+}
+
+function formatEmail(data) {
+  const sections = [
+    { title: 'THE BASICS', fields: [
+      ['age', 'Age'], ['location', 'Location'], ['current_situation', 'Current Work Situation'], ['education_training', 'Education & Training']
+    ]},
+    { title: 'SKILLS & STRENGTHS', fields: [
+      ['core_skills', 'Top Skills'], ['skill_areas', 'Strength Areas'], ['licenses_certs', 'Licenses & Certifications'], ['network_connections', 'Network & Connections'], ['side_skills', 'Side Skills / Hidden Talents']
+    ]},
+    { title: 'EXPERIENCE & TRACK RECORD', fields: [
+      ['business_experience', 'Business Experience'], ['biggest_professional_win', 'Biggest Win'], ['biggest_lesson', 'Biggest Lesson Learned'], ['industries_experience', 'Industries Worked In']
+    ]},
+    { title: 'MONEY & RESOURCES', fields: [
+      ['invest_amount', 'Can Invest'], ['income_runway', 'Runway Without Pay'], ['credit_range', 'Credit Range'], ['existing_assets', 'Existing Tools/Equipment'], ['financial_obligations', 'Financial Obligations'], ['other_income', 'Other Income Sources']
+    ]},
+    { title: 'HOW THEY WORK', fields: [
+      ['hours_available', 'Hours/Week'], ['schedule_constraints', 'Schedule Constraints'],
+      ['pref_physical', 'Physical/Field Work'], ['pref_office', 'Office/Computer Work'], ['pref_sales', 'Sales/Networking'], ['pref_manage', 'Managing/Projects'], ['pref_learning', 'Learning New Skills'],
+      ['physical_limitations', 'Physical Limitations'], ['hard_nos', 'Hard No\'s']
+    ]},
+    { title: 'VISION & MOTIVATION', fields: [
+      ['business_ideas', 'Business Ideas'], ['industries_excited', 'Industries That Excite Them'], ['why_business', 'Why Own Business'], ['risk_tolerance', 'Risk Tolerance'], ['five_year_vision', '5-Year Vision']
+    ]},
+    { title: 'PARTNERSHIP', fields: [
+      ['role_preference', 'Preferred Roles'], ['conflict_style', 'Conflict Style'], ['communication_style', 'Communication Style'], ['ownership_expectations', 'Ownership/Pay Expectations'], ['family_concerns', 'Family Business Concerns'], ['commitment_level', 'Commitment Level'], ['anything_else', 'Additional Notes']
+    ]}
+  ];
+
+  let body = `PARTNERSHIP BLUEPRINT — ${data.name.toUpperCase()}\nSubmitted: ${data.submitted}\n${'═'.repeat(50)}\n\n`;
+
+  sections.forEach(sec => {
+    body += `▸ ${sec.title}\n${'─'.repeat(40)}\n`;
+    sec.fields.forEach(([key, label]) => {
+      if (data[key]) body += `${label}: ${data[key]}\n`;
+    });
+    body += '\n';
+  });
+
+  return body;
+}
+
+function submitSurvey() {
+  if (!validateSection(7)) return;
+
+  const data = gatherData();
+  const emailBody = formatEmail(data);
+
+  // Show complete
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById('progressBar').style.display = 'none';
+  document.getElementById('completeSection').classList.add('active');
+
+  const subject = encodeURIComponent(`Partnership Blueprint — ${data.name}`);
+  const body = encodeURIComponent(emailBody);
+  const mailto = `mailto:${JAMES_EMAIL}?subject=${subject}&body=${body}`;
+
+  window._surveyResults = emailBody;
+
+  document.getElementById('resultActions').innerHTML = `
+    <a href="${mailto}" class="btn-email">📧 Send to James via Email</a>
+    <span class="or-divider">or</span>
+    <button class="btn-copy" id="copyBtn" onclick="copyResults()">📋 Copy Results to Clipboard</button>
+    <p style="margin-top:16px;font-size:13px;color:var(--text-dim);">If the email button doesn't work, just copy and paste into a text to James.</p>
+  `;
+}
+
+function copyResults() {
+  navigator.clipboard.writeText(window._surveyResults).then(() => {
+    const btn = document.getElementById('copyBtn');
+    btn.textContent = '✓ Copied!';
+    btn.style.borderColor = 'var(--success)';
+    btn.style.color = 'var(--success)';
+    setTimeout(() => {
+      btn.textContent = '📋 Copy Results to Clipboard';
+      btn.style.borderColor = '';
+      btn.style.color = '';
+    }, 2500);
+  });
+}
+
+// Allow Enter key on name field
+document.getElementById('respondentName').addEventListener('keydown', e => {
+  if (e.key === 'Enter') startSurvey();
+});
+</script>
+
+</body>
+</html>
