@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Allen Brothers — Strategic Risk Deep Dive</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #FAFAF7;
+  --card: #FFFFFF;
+  --dark: #1A1D23;
+  --text: #3D4043;
+  --muted: #7A7D82;
+  --green: #2D6A4F;
+  --green-light: #D8F3DC;
+  --green-bg: #F0FAF3;
+  --amber: #B45309;
+  --amber-light: #FEF3C7;
+  --amber-bg: #FFFBEB;
+  --red: #991B1B;
+  --red-light: #FEE2E2;
+  --red-bg: #FEF2F2;
+  --blue: #1E40AF;
+  --blue-light: #DBEAFE;
+  --blue-bg: #EFF6FF;
+  --border: #E5E5E0;
+  --radius: 12px;
+  --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-lg: 0 4px 16px rgba(0,0,0,0.08);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); line-height: 1.65; -webkit-font-smoothing: antialiased; }
+.container { max-width: 960px; margin: 0 auto; padding: 24px 20px 80px; }
+a { color: var(--blue); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+.back-link { display: inline-block; font-size: 14px; font-weight: 600; color: var(--muted); margin-bottom: 12px; }
+.back-link:hover { color: var(--dark); text-decoration: none; }
+
+.hero { text-align: center; padding: 40px 20px 40px; border-bottom: 1px solid var(--border); margin-bottom: 40px; }
+.hero-label { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--red); font-weight: 700; margin-bottom: 16px; }
+.hero h1 { font-family: 'Playfair Display', serif; font-size: 38px; font-weight: 800; color: var(--dark); line-height: 1.15; margin-bottom: 12px; }
+.hero p { color: var(--muted); font-size: 16px; max-width: 640px; margin: 0 auto; }
+
+.card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 28px; margin-bottom: 20px; box-shadow: var(--shadow); }
+.card h2 { font-family: 'Playfair Display', serif; font-size: 24px; color: var(--dark); margin-bottom: 16px; font-weight: 700; }
+.card h3 { font-size: 16px; font-weight: 700; color: var(--dark); margin: 20px 0 8px; }
+.card p { margin-bottom: 12px; font-size: 15px; }
+
+.callout { border-radius: 10px; padding: 20px 24px; margin: 20px 0; font-size: 15px; }
+.callout-green { background: var(--green-bg); border-left: 4px solid var(--green); }
+.callout-amber { background: var(--amber-bg); border-left: 4px solid var(--amber); }
+.callout-red { background: var(--red-bg); border-left: 4px solid var(--red); }
+.callout-blue { background: var(--blue-bg); border-left: 4px solid var(--blue); }
+.callout strong { display: block; margin-bottom: 4px; }
+
+.timeline-table { width: 100%; border-collapse: collapse; font-size: 14px; margin: 16px 0; }
+.timeline-table th { text-align: left; padding: 10px 12px; background: var(--dark); color: white; font-weight: 600; font-size: 12px; letter-spacing: 0.5px; text-transform: uppercase; }
+.timeline-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+.timeline-table tr:nth-child(even) td { background: var(--bg); }
+
+.status-dead { color: var(--red); font-weight: 700; }
+.status-alive { color: var(--green); font-weight: 700; }
+.status-uncertain { color: var(--amber); font-weight: 700; }
+
+.section-divider { text-align: center; margin: 48px 0 32px; position: relative; }
+.section-divider::before { content: ''; position: absolute; top: 50%; left: 0; right: 0; height: 1px; background: var(--border); }
+.section-divider span { position: relative; background: var(--bg); padding: 0 20px; font-size: 11px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--muted); }
+
+.risk-meter { display: flex; gap: 4px; margin: 8px 0 16px; }
+.risk-dot { width: 32px; height: 8px; border-radius: 4px; background: #E5E5E0; }
+.risk-dot.filled-green { background: var(--green); }
+.risk-dot.filled-amber { background: var(--amber); }
+.risk-dot.filled-red { background: var(--red); }
+
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0; }
+.grid-box { border-radius: 10px; padding: 20px; font-size: 14px; }
+.grid-box h4 { font-size: 14px; font-weight: 700; margin-bottom: 8px; }
+.grid-box ul { margin-left: 16px; }
+.grid-box li { margin: 4px 0; }
+
+.phase-card { background: var(--card); border: 2px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 16px; transition: border-color 0.2s; }
+.phase-card:hover { border-color: var(--green); }
+.phase-label { font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--green); margin-bottom: 4px; }
+.phase-card h3 { font-family: 'Playfair Display', serif; font-size: 20px; color: var(--dark); margin: 0 0 12px; }
+.phase-card p { font-size: 14px; margin-bottom: 8px; }
+
+.role-tag { display: inline-block; font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 20px; border: 1px solid; margin: 2px 4px 2px 0; }
+.role-dave { background: #FFF7ED; color: #C2410C; border-color: #FDBA74; }
+.role-james { background: #EFF6FF; color: #1D4ED8; border-color: #93C5FD; }
+.role-michael { background: #F0FDF4; color: #15803D; border-color: #86EFAC; }
+.role-hire { background: #F5F3FF; color: #6D28D9; border-color: #C4B5FD; }
+
+.metric-row { display: flex; gap: 12px; flex-wrap: wrap; margin: 16px 0; }
+.metric-sm { background: var(--bg); border-radius: 8px; padding: 12px 16px; flex: 1; min-width: 140px; }
+.metric-sm-label { font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); }
+.metric-sm-value { font-size: 18px; font-weight: 700; color: var(--dark); }
+
+@media (max-width: 640px) {
+  .hero h1 { font-size: 28px; }
+  .grid-2 { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <a href="Allen_Brothers_Market_Opportunities.html" class="back-link">← Back to Market Opportunities</a>
+  <div class="hero-label">Strategic Risk Deep Dive</div>
+  <h1>Federal Policy &<br>The Dave Bottleneck</h1>
+  <p>Two critical risks that could sink the business if not addressed from day one. Here's what we know, what's uncertain, and how to build a plan that survives either scenario.</p>
+</div>
+
+<div class="container">
+
+  <!-- ════════ RISK 1: FEDERAL POLICY ════════ -->
+  <div class="card">
+    <h2>Risk #1: Federal Energy Policy — What Actually Happened</h2>
+    <p>There's been a lot of noise about IRA funding being "revoked." Here's the precise timeline of what happened and what it means for your business.</p>
+
+    <h3>The Timeline</h3>
+    <table class="timeline-table">
+      <thead><tr><th>Date</th><th>Event</th><th>Impact</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>Jan 20, 2025</strong></td>
+          <td>Trump signs "Unleashing American Energy" executive order. Pauses disbursement of certain IRA funds for 90-day review. Revokes Biden's EO 14082 (IRA implementation order).</td>
+          <td class="status-uncertain">Temporary freeze — created uncertainty but courts blocked permanent stops</td>
+        </tr>
+        <tr>
+          <td><strong>Jan 23, 2025</strong></td>
+          <td>White House memo clarifies: pause applies only to programs mentioned in Section 2 of the EO, not all IRA funding.</td>
+          <td class="status-uncertain">Narrower than feared — HWAP and state rebates not directly targeted</td>
+        </tr>
+        <tr>
+          <td><strong>Early 2025</strong></td>
+          <td>Courts block broad funding freezes. Impoundment Control Act (1974) prevents executive branch from unilaterally stopping congressionally appropriated funds.</td>
+          <td class="status-alive">Legal protection — executive orders cannot override federal statutes</td>
+        </tr>
+        <tr>
+          <td><strong>July 4, 2025</strong></td>
+          <td>"One Big Beautiful Bill Act" (OBBBA / Public Law 119-21) signed. This is <em>legislation</em>, not an executive order — it's permanent law.</td>
+          <td class="status-dead">Major impact — this is the real change</td>
+        </tr>
+        <tr>
+          <td><strong>Dec 31, 2025</strong></td>
+          <td>Section 25C (Energy Efficient Home Improvement Credit) and Section 25D (Residential Clean Energy Credit) terminated.</td>
+          <td class="status-dead">Dead — no more homeowner tax credits for efficiency upgrades or solar</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>What's Dead vs. What's Alive</h2>
+
+    <div class="grid-2">
+      <div class="grid-box" style="background: var(--red-bg);">
+        <h4 style="color: var(--red);">☠️ Terminated by OBBBA (Law)</h4>
+        <ul>
+          <li><strong>25C</strong> — Energy Efficient Home Improvement Credit (ended Dec 31, 2025)</li>
+          <li><strong>25D</strong> — Residential Clean Energy Credit (ended Dec 31, 2025)</li>
+          <li><strong>30D/25E</strong> — New & Used EV Credits (ended Sep 30, 2025)</li>
+          <li><strong>45L</strong> — New Energy Efficient Home Credit (ends Jun 30, 2026)</li>
+          <li><strong>179D</strong> — Commercial Building Deduction (ends Jun 30, 2026)</li>
+        </ul>
+        <p style="margin-top: 12px; font-size: 13px; color: var(--red);"><strong>These are gone.</strong> Signed into law. Not coming back without new legislation.</p>
+      </div>
+      <div class="grid-box" style="background: var(--green-bg);">
+        <h4 style="color: var(--green);">✓ Still Available (for now)</h4>
+        <ul>
+          <li><strong>HWAP</strong> — Ohio Home Weatherization Assistance Program (ongoing federal + state funding, separate from IRA)</li>
+          <li><strong>HOMES Rebates</strong> — $240M allocated to Ohio, available through Sep 2031</li>
+          <li><strong>HEAR Rebates</strong> — Appliance rebates for low/moderate income, through Sep 2031</li>
+          <li><strong>Utility Programs</strong> — Columbia Gas WarmChoice, CenterPoint Energy weatherization</li>
+          <li><strong>HEAP/PIPP</strong> — Energy assistance programs (Jul 2025 – May 2026 cycle)</li>
+        </ul>
+        <p style="margin-top: 12px; font-size: 13px; color: var(--green);"><strong>These are funded and operational.</strong> State-administered, already appropriated. Executive orders can delay but not permanently stop.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout callout-amber">
+    <strong>⚠️ The Ohio HOMES/HEAR Question Mark</strong>
+    Ohio has been allocated $240M and submitted its application to DOE. The state was "awaiting federal approval" as of late 2025 with no clear launch date. The OBBBA did not repeal the HOMES/HEAR programs themselves — they remain funded through 2031. But the current administration has shown willingness to slow-walk approvals. States that already launched (Wisconsin, California, Michigan) are distributing rebates. Ohio may experience delays. <strong>Do not build your Year 1 plan around Ohio HOMES/HEAR revenue.</strong> Treat it as upside if/when it arrives.
+  </div>
+
+  <div class="card">
+    <h2>What This Means for Allen Brothers</h2>
+
+    <h3>The Business Case Without Any Federal Programs</h3>
+    <p>Here's the critical question: does this business work if HOMES/HEAR never launches in Ohio and no new tax credits appear? <strong>Yes — and here's why:</strong></p>
+
+    <p><strong>HWAP is not IRA money.</strong> Ohio's Home Weatherization Assistance Program is funded through the Department of Energy's ongoing Weatherization Assistance Program (WAP), which has existed since 1976. It's separate from the IRA. MVCAP serves 600 homes/year across 9 counties with extensive waiting lists. This program pre-dates the IRA by decades and is not affected by OBBBA.</p>
+
+    <p><strong>Utility programs are private.</strong> Columbia Gas WarmChoice and CenterPoint Energy's weatherization programs are funded by utility ratepayers, not federal programs. They have their own budgets and contractor needs. These are completely insulated from federal policy changes.</p>
+
+    <p><strong>The 25C termination actually helps contractors.</strong> Here's the counterintuitive part: with homeowner tax credits eliminated, the remaining rebate programs (HOMES, HEAR, utility programs) become the <em>only</em> path to affordable energy upgrades. Demand for certified contractors in these programs increases because there's no DIY tax credit alternative anymore. Homeowners who want savings must go through approved contractor networks.</p>
+
+    <h3>Revenue Streams Ranked by Federal Policy Risk</h3>
+    <table class="timeline-table">
+      <thead><tr><th>Revenue Stream</th><th>Federal Risk</th><th>Why</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Private renovation / flipping</strong></td><td class="status-alive">Zero</td><td>No government dependency at all</td></tr>
+        <tr><td><strong>Utility weatherization</strong></td><td class="status-alive">Very Low</td><td>Funded by ratepayers, not federal budget</td></tr>
+        <tr><td><strong>HWAP subcontracting</strong></td><td class="status-alive">Low</td><td>Pre-IRA program, 50 years of funding history</td></tr>
+        <tr><td><strong>HOMES/HEAR rebate work</strong></td><td class="status-uncertain">Moderate</td><td>Funds allocated but Ohio launch delayed</td></tr>
+        <tr><td><strong>Work dependent on 25C/25D credits</strong></td><td class="status-dead">Dead</td><td>Credits terminated by OBBBA</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout callout-green">
+      <strong>Bottom Line on Policy Risk</strong>
+      Your core revenue streams (HWAP, utility programs, private renovation) are not dependent on any IRA provisions. The 25C/25D terminations actually concentrate demand into the programs you'd be serving. HOMES/HEAR is gravy if it comes. Build the business to succeed without it, and treat it as a growth accelerator when Ohio launches.
+    </div>
+  </div>
+
+  <!-- ════════ RISK 2: DAVE BOTTLENECK ════════ -->
+  <div class="section-divider"><span>Risk #2</span></div>
+
+  <div class="card">
+    <h2>Risk #2: The Dave Bottleneck</h2>
+    <p>Every opportunity in the market analysis has Dave as the lead builder. He's a journeyman carpenter with OSHA 30, the only brother with hands-on trade skills, and the one doing the physical work. That's the strength of the team — but it's also a single point of failure.</p>
+
+    <h3>The Math Problem</h3>
+    <p>Dave listed his availability as <strong>under 10 hours per week</strong>. A typical weatherization job takes 2–4 days of on-site work. A renovation project takes weeks. A flip takes months. Even if Dave goes full-time eventually, one person can only work on one job site at a time.</p>
+
+    <div class="metric-row">
+      <div class="metric-sm"><div class="metric-sm-label">Dave's Stated Hours</div><div class="metric-sm-value">&lt;10/week</div></div>
+      <div class="metric-sm"><div class="metric-sm-label">HWAP Jobs/Year</div><div class="metric-sm-value">~600</div></div>
+      <div class="metric-sm"><div class="metric-sm-label">Avg Job Duration</div><div class="metric-sm-value">2–4 Days</div></div>
+      <div class="metric-sm"><div class="metric-sm-label">Revenue Cap (Dave Solo)</div><div class="metric-sm-value">$150–200K</div></div>
+    </div>
+
+    <p>If Dave is the only one who can do the work, the business has a hard ceiling. Revenue is directly capped by Dave's available hours. He can't take a sick day, can't go on vacation, and every delay at one job cascades to the next. Meanwhile, James and Michael's skills (project management, sales, strategy) can scale infinitely — they can sell and schedule more work than Dave can physically do.</p>
+
+    <div class="callout callout-red">
+      <strong>The Real Risk</strong>
+      This isn't just a growth problem — it's a <em>Dave burnout</em> problem. If the business succeeds and demand grows (which is the goal), Dave becomes the bottleneck and the pressure increases on the one person with the lowest risk tolerance and the most family concerns. That's a recipe for the exact outcome everyone wants to avoid: business stress damaging the family relationship.
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>The Hiring Strategy: Building Beyond Dave</h2>
+    <p>Hiring isn't a Phase 3 nice-to-have. It needs to be baked into the business plan from day one, even if the first hire doesn't happen for 6 months.</p>
+
+    <h3>The Phased Hiring Model</h3>
+
+    <div class="phase-card">
+      <div class="phase-label">Phase 1 — Months 1–4</div>
+      <h3>Dave as Lead + Subcontractors on Call</h3>
+      <p>Dave does the core work. For jobs that require a second set of hands or specialized skills (HVAC, electrical, plumbing), bring in subcontractors per job. This keeps overhead at zero while building revenue and proving the model.</p>
+      <div style="margin-top: 8px;">
+        <span class="role-tag role-dave">Dave → Lead installer</span>
+        <span class="role-tag role-james">James → Scheduling + QC</span>
+        <span class="role-tag role-michael">Michael → Sub relationships</span>
+      </div>
+      <p style="margin-top: 12px;"><strong>Key metric:</strong> Track Dave's utilization rate. When he's consistently booked 4+ weeks out, it's time for Phase 2.</p>
+    </div>
+
+    <div class="phase-card">
+      <div class="phase-label">Phase 2 — Months 4–8</div>
+      <h3>First Hire: Apprentice / Helper</h3>
+      <p>Hire a laborer or apprentice to work alongside Dave. This person handles demo, cleanup, material transport, and basic installation under Dave's supervision. Dave's output roughly doubles because he's not doing low-skill tasks. Dave's wife's concerns note (<em>"Previous business owner"</em>) — she may bring valuable hiring perspective.</p>
+      <div style="margin-top: 8px;">
+        <span class="role-tag role-dave">Dave → Lead + trainer</span>
+        <span class="role-tag role-hire">Hire #1 → Helper/apprentice ($16–20/hr)</span>
+        <span class="role-tag role-james">James → Onboarding + process docs</span>
+      </div>
+      <div class="metric-row">
+        <div class="metric-sm"><div class="metric-sm-label">Cost</div><div class="metric-sm-value">$33–42K/yr</div></div>
+        <div class="metric-sm"><div class="metric-sm-label">Revenue Lift</div><div class="metric-sm-value">+60–80%</div></div>
+        <div class="metric-sm"><div class="metric-sm-label">Break-Even</div><div class="metric-sm-value">~2 Jobs/Month</div></div>
+      </div>
+    </div>
+
+    <div class="phase-card">
+      <div class="phase-label">Phase 3 — Months 8–14</div>
+      <h3>Second Crew: Dave Steps Into Foreman</h3>
+      <p>Hire a second skilled tradesperson. Now you can run two job sites simultaneously — Dave leads one, the experienced hire leads the other. Dave transitions from doing 100% of the labor to supervising and doing the complex work. This is the inflection point where the business stops being "Dave's labor for hire" and becomes a real company.</p>
+      <div style="margin-top: 8px;">
+        <span class="role-tag role-dave">Dave → Foreman / lead on complex jobs</span>
+        <span class="role-tag role-hire">Hire #1 → Crew 1 installer</span>
+        <span class="role-tag role-hire">Hire #2 → Crew 2 lead ($22–28/hr)</span>
+        <span class="role-tag role-james">James → Dual-project scheduling</span>
+        <span class="role-tag role-michael">Michael → Sales to fill 2 crews</span>
+      </div>
+      <div class="metric-row">
+        <div class="metric-sm"><div class="metric-sm-label">Added Cost</div><div class="metric-sm-value">$46–58K/yr</div></div>
+        <div class="metric-sm"><div class="metric-sm-label">Revenue Capacity</div><div class="metric-sm-value">$350–500K</div></div>
+        <div class="metric-sm"><div class="metric-sm-label">Dave's Hours</div><div class="metric-sm-value">Reduced 30%</div></div>
+      </div>
+    </div>
+
+    <div class="phase-card">
+      <div class="phase-label">Phase 4 — Year 2+</div>
+      <h3>Dave as Quality Lead, Not Daily Laborer</h3>
+      <p>With trained crews, Dave shifts to quality inspections, training new hires, and handling the most complex or high-value work. His shoulder limitations become manageable because he's choosing which jobs need his hands. The business runs without requiring Dave on every site. This is James's 5-year vision: "move into a more passive income situation."</p>
+      <div style="margin-top: 8px;">
+        <span class="role-tag role-dave">Dave → QC lead + mentor</span>
+        <span class="role-tag role-hire">2–3 Crew members</span>
+        <span class="role-tag role-james">James → Operations manager</span>
+        <span class="role-tag role-michael">Michael → Growth + acquisitions</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Why This Solves Multiple Problems at Once</h2>
+
+    <div class="grid-2">
+      <div class="grid-box" style="background: var(--green-bg);">
+        <h4 style="color: var(--green);">For Dave</h4>
+        <ul>
+          <li>Reduces physical toll (shoulder limitation)</li>
+          <li>No longer single point of failure</li>
+          <li>Can take vacations without stopping revenue</li>
+          <li>Shifts to mentoring — which has no hard "no's" on his list</li>
+          <li>Becomes more like a foreman than a laborer over time</li>
+        </ul>
+      </div>
+      <div class="grid-box" style="background: var(--blue-bg);">
+        <h4 style="color: var(--blue);">For the Business</h4>
+        <ul>
+          <li>Revenue scales beyond one person's capacity</li>
+          <li>Can pursue flips + weatherization simultaneously</li>
+          <li>Reduces risk of Dave burnout</li>
+          <li>Aligns with MVCAP's model (they run 9 crews)</li>
+          <li>Ohio needs 15,000+ construction workers — hiring is the market opportunity itself</li>
+        </ul>
+      </div>
+      <div class="grid-box" style="background: var(--amber-bg);">
+        <h4 style="color: var(--amber);">For Dave's Wife</h4>
+        <ul>
+          <li>Dave isn't the only one the business depends on</li>
+          <li>His role becomes sustainable, not grueling</li>
+          <li>Clear path to reduced hours, not increased hours</li>
+          <li>The business has an exit plan that doesn't require Dave forever</li>
+        </ul>
+      </div>
+      <div class="grid-box" style="background: #FAF5FF;">
+        <h4 style="color: #6D28D9;">For James's Flexibility</h4>
+        <ul>
+          <li>James said he wants to "go hard – go easy – go hard"</li>
+          <li>With crews, the business doesn't stall when James eases off</li>
+          <li>Systems and processes (James's strength) enable this flexibility</li>
+          <li>Crew management is project management — James's superpower</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Where to Find Your First Hires</h2>
+    <p>The labor shortage works both ways. It's hard to find people — but the Ohio Weatherization Training Center (which MVCAP operates in partnership with COAD) literally trains people for exactly this work. The training center is in your backyard.</p>
+
+    <table class="timeline-table">
+      <thead><tr><th>Source</th><th>Why It Works</th><th>Cost</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Ohio Weatherization Training Center</strong></td><td>Graduates trained in energy auditing, insulation, lead abatement, furnace repair. MVCAP's own pipeline.</td><td>Free (they want to place graduates)</td></tr>
+        <tr><td><strong>Trade school partnerships</strong></td><td>Dave completed an apprenticeship — he knows the value. Local trade schools have carpentry graduates looking for placement.</td><td>Free or small signing incentive</td></tr>
+        <tr><td><strong>MVCAP crew members</strong></td><td>MVCAP is actively hiring crew members. Some may prefer to work for a smaller, family-run crew. Monitor their postings.</td><td>Competitive wages ($18–24/hr)</td></tr>
+        <tr><td><strong>Dave's network / wife's network</strong></td><td>Dave's wife is noted as "very skilled at many things & a previous business owner." She may know reliable tradespeople.</td><td>Word of mouth</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout callout-green">
+    <strong>The Key Takeaway</strong>
+    These two risks — federal policy and the Dave bottleneck — are actually the same risk wearing different masks. Both are about <em>dependency</em>. Don't depend solely on federal programs for revenue. Don't depend solely on Dave for labor. The business that diversifies its revenue streams <em>and</em> its workforce from the start is the business that survives policy changes, handles Dave taking a week off, and actually achieves the "passive income, generational value" vision all three brothers described.
+  </div>
+
+</div>
+</body>
+</html>
